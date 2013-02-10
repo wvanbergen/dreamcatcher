@@ -8,20 +8,15 @@ class Dreamcatcher::LoggerProxy
   end
 
   def capture(&block)
-    register_logger_monkeypatch
-    yield
-    log_entries
+    register_logger_monkeypatch unless @original_logger.nil?
+    yield if block_given?
+    return self
   ensure
-    deregister_logger_monkeypatch
+    deregister_logger_monkeypatch unless @original_logger.nil?
   end
 
   def self.capture(logger, &block)
-    if logger.nil?
-      block.call()
-      return []
-    else
-      new(logger).capture(&block)
-    end
+    Dreamcatcher::LoggerProxy.new(logger).capture(&block)
   end
 
   protected

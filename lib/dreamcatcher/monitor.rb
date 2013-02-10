@@ -1,19 +1,27 @@
 class Dreamcatcher::Monitor
 
-  attr_reader :configuration, :context
+  attr_reader :configuration, :handlers
 
   def initialize(configuration)
     @configuration = configuration
+    @handlers = build_handlers
   end
 
   def monitor(options = {}, &block)
     @context = options[:context] || {}
-    log_entries = Dreamcatcher::LoggerProxy.capture(options[:logger]) do
-      block.call
-    end
-
+    logger_proxy = Dreamcatcher::LoggerProxy.new(options[:logger])
+    logger_proxy.capture { block.call }
+      
   rescue @configuration.exception_class => exception
-    # handle exception
-    raise
+    context = Dreamcatcher::ExceptionContext.new(exception, logger_proxy.log_entries)
+    handlers.each { |handler| handler.handle_exception(context) }
+    raise 
+  end
+
+  protected 
+
+  def build_handlers
+    mailer = Dreamcatcher::Mailer.new(configuration.mailer)
+    [mailer]
   end
 end
