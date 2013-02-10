@@ -1,3 +1,5 @@
+require 'logger'
+
 class Dreamcatcher::LoggerProxy
 
   attr_reader :original_logger, :log_entries
@@ -24,7 +26,8 @@ class Dreamcatcher::LoggerProxy
   def register_logger_monkeypatch
     @original_logger.instance_variable_set(:"@_captured_entries", @log_entries)
     class << @original_logger
-      def add_with_capture(severity, prog, message)
+      def add_with_capture(severity, prog, message = nil, &block)
+        message = yield if message.nil? && block_given?
         @_captured_entries << LogEntry.new(severity, prog, message)
         add_without_capture(severity, prog, message)
       end
@@ -50,6 +53,27 @@ class Dreamcatcher::LoggerProxy
       @prog      = prog
       @message   = message
       @timestamp = timestamp || Time.now
+    end
+
+    def to_s(format = '%t [%s] %m')
+      format.
+        sub('%s', format_severity).
+        sub('%m', @message || '').
+        sub('%p', @prog || '').
+        sub('%t', format_timestamp)
+    end
+
+    protected
+
+    # Severity label for logging (max 5 chars).
+    SEV_LABEL = %w(DEBUG INFO WARN ERROR FATAL ANY)
+
+    def format_severity
+      SEV_LABEL[severity] || 'ANY'
+    end
+
+    def format_timestamp
+      timestamp.strftime('%F %T %Z')
     end
   end
 end

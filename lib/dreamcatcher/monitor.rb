@@ -21,7 +21,7 @@ class Dreamcatcher::Monitor
   protected 
 
   def build_handlers
-    mailer = Dreamcatcher::Mailer.new(configuration.mailer)
+    mailer = Dreamcatcher::Mailer.new(configuration)
     [mailer]
   end
 end

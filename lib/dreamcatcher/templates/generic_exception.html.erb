@@ -1,3 +1,38 @@
-<h1> Hello world </h1>
+<h3> Exception: <%=exception.class.name %> </h3>
+<table>
+  <tr>
+    <th style="text-align: left;"> Exception </th>
+    <td> <code><%=exception.class.name %></code> </td>
+  </tr>
 
-<p> HTML version </p>
+  <tr>
+    <th style="text-align: left;"> Timestamp </th>
+    <td> <%= timestamp %> </td>
+  </tr>
+
+  <% if !exception.message.nil? && exception.message != '' %>
+  <tr>
+    <th style="text-align: left;"> Message </th>
+    <td> <%= exception.message %> </td>
+  </tr>  
+  <% end %>
+</table>
+
+<% if exception.backtrace %>
+<h3> Backtrace </h3>
+<pre style="font-family:monospace;">
+<% exception.backtrace.each do |line| %>
+<%= line %>
+<% end %>
+</pre>
+<% end %>
+
+
+<% if log_entries.any? %>
+<h3> Log </h3>
+<pre style="font-family:monospace;">
+<% log_entries.each do |entry| %>
+<%= entry.to_s %>
+<% end %>
+</pre>
+<% end %>

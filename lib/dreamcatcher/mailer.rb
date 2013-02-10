@@ -12,26 +12,21 @@ class Dreamcatcher::Mailer
 
   def handle_exception(context)
     email_options = build_email_options(context)
-    if evaluate_config_option(:deliver, context)
+    if configuration.evaluate(:deliver, context)
       Pony.mail(email_options)
     else
       p email_options
     end
   end
 
-  def evaluate_config_option(symbol, context)
-    value = configuration.send(symbol)
-    value.respond_to?(:call) ? value.call(context) : value
-  end
-
   def build_email_options(context)
 
     options = {
-      :to          => evaluate_config_option(:to, context),
-      :from        => evaluate_config_option(:from, context),
-      :subject     => evaluate_config_option(:subject, context),
-      :via         => evaluate_config_option(:via, context),
-      :via_options => evaluate_config_option(:via_options, context)
+      :to          => configuration.evaluate(:to, context),
+      :from        => configuration.evaluate(:from, context),
+      :subject     => configuration.evaluate(:subject, context),
+      :via         => configuration.evaluate(:via, context),
+      :via_options => configuration.evaluate(:via_options, context)
     }
 
     options[:body]      = render_body(:text, context, options)
@@ -45,8 +40,8 @@ class Dreamcatcher::Mailer
   end
 
   def render_body(type, context, options)
-    template_dir  = evaluate_config_option(:template_dir, context)
-    template      = evaluate_config_option(:template, context)
+    template_dir  = configuration.evaluate(:template_dir, context)
+    template      = configuration.evaluate(:template, context)
     template_file = erb_template_file(template_dir, template, type)
     email_context = EmailContext.new(context, options)
 
@@ -65,7 +60,7 @@ class Dreamcatcher::Mailer
   end
 
   def render_erb_template(template_file, context, &block)
-    ERB.new(File.read(template_file)).result(context.get_binding(&block))
+    ERB.new(File.read(template_file), nil, '<>').result(context.get_binding(&block))
   end
 
   def erb_template_file(dir, name, type)

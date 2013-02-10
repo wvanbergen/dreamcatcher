@@ -1,7 +1,25 @@
-# <%= subject %> #
+# Exception: <%=exception.class.name %>
 
-Plain text version
+Exception: <%=exception.class.name %>
+Timestamp: <%= timestamp %>
+<% if !exception.message.nil? && exception.message != '' %>
+Message:   <%= exception.message %>
+<% end %>
 
-Backtrace:
 
-Log:
+<% if exception.backtrace %>
+## Backtrace
+
+<% exception.backtrace.each do |line| %>
+<%= line %>
+<% end %>
+<% end %>
+
+
+<% if log_entries.any? %>
+## Log
+
+<% log_entries.each do |entry| %>
+<%= entry.to_s %>
+<% end %>
+<% end %>
