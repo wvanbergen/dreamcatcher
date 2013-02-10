@@ -1,18 +1,17 @@
-require "dreamcatcher/version"
-
 module Dreamcatcher
   extend self
   
   def monitor(options = {}, &block)
-    context = options[:context] || {}
-    log_entries = DreamCatcher::LoggerProxy.capture(options[:logger]) do
-      block.call
-    end
+    Dreamcatcher::Monitor.new(configuration).monitor(options, &block)
+  end
 
-  rescue Exception => exception
-    # send email
-    raise
+  def configuration
+    @configuration = Dreamcatcher::Configuration.new
   end
 end
 
+require "dreamcatcher/version"
+require "dreamcatcher/configuration"
+require "dreamcatcher/monitor"
 require "dreamcatcher/logger_proxy"
+require "dreamcatcher/mailer"
