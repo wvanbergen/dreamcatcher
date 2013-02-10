@@ -6,7 +6,7 @@ module Dreamcatcher
   end
 
   def configuration
-    @configuration = Dreamcatcher::Configuration.new
+    @configuration ||= Dreamcatcher::Configuration.new
   end
 
   TEMPLATE_DIR = File.expand_path('../dreamcatcher/templates', __FILE__)
