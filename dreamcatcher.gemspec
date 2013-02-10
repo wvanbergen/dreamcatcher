@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Dreamcatcher::VERSION
   gem.authors       = ["Willem van Bergen"]
   gem.email         = ["willem@railsdoctors.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{Catch}
+  gem.description   = %q{Catch exceptions and send email notifications with context.}
+  gem.summary       = %q{Catch exceptions and send email notifications with context.}
   gem.homepage      = "https://github.com/wvanbergen/dreamcatcher"
 
   gem.files         = `git ls-files`.split($/)

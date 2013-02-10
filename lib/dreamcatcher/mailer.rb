@@ -15,7 +15,7 @@ class Dreamcatcher::Mailer
     if configuration.evaluate(:deliver, context)
       Pony.mail(email_options)
     else
-      p email_options
+      # TODO: print / log email somewhere
     end
   end
 
