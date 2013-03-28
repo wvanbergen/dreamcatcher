@@ -20,10 +20,8 @@
 
 <% if exception.backtrace %>
 <h3> Backtrace </h3>
-<pre style="font-family:monospace;">
-<% exception.backtrace.each do |line| %>
-<%= line %>
-<% end %>
+<pre style="font-family:monospace; overflow-x: visible;">
+<%= exception.backtrace.join("\n") %>
 </pre>
 <% end %>
 
@@ -32,7 +30,7 @@
 <h3> Log </h3>
 <pre style="font-family:monospace;">
 <% log_entries.each do |entry| %>
-<%= entry.to_s %>
+  <%= entry.to_s %>
 <% end %>
 </pre>
 <% end %>
