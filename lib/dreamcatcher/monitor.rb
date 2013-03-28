@@ -13,7 +13,7 @@ class Dreamcatcher::Monitor
     logger_proxy.capture { block.call }
       
   rescue @configuration.exception_class => exception
-    context = Dreamcatcher::ExceptionContext.new(exception, logger_proxy.log_entries)
+    context = Dreamcatcher::ExceptionContext.new(exception, logger_proxy.log_entries, @context)
     handlers.each { |handler| handler.handle_exception(context) }
     raise 
   end
